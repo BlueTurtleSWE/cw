@@ -9,11 +9,11 @@ beauty is shooting cows with a bazooka. _Just sayin_
 Create subfolders js/lib/physicsjs, and download the dependencies.
 
 *Dependencies*
-jQuery - Just DL the latest version (minified) and put it in js/lib under the name of "jquery.js" 
+- jQuery - Just DL the latest version (minified) and put it in js/lib under the name of "jquery.js"  
     http://jquery.com/download/  
-jCanvas - Same thing as jQuery  
+- jCanvas - Same thing as jQuery  
     http://plugins.jquery.com/jcanvas/  
-PhysicsJS - Download the distribution of PhysicsJS, unpack it, and copy the "dist" subfolder to js/lib/physicsjs  
+- PhysicsJS - Download the distribution of PhysicsJS, unpack it, and copy the "dist" subfolder to js/lib/physicsjs  
     ...alternately, you could just create the physicsjs subfolder and copy physicsjs-full.js there (for now).  
     http://wellcaffeinated.net/PhysicsJS/  
 
