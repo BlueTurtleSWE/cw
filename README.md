@@ -17,7 +17,7 @@ Create subfolders js/lib/physicsjs, and download the dependencies.
     ...alternately, you could just create the physicsjs subfolder and copy physicsjs-full.js there (for now).  
     http://wellcaffeinated.net/PhysicsJS/  
 
-**Or just try it**
+**Or just try it**  
 http://cw.blueturtle.nu/
 
 Any questions? Ping filiphazardous on GutHub!
