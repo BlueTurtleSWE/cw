@@ -1,2 +1,3 @@
 .idea
-js/lib
+js/lib/*
+js/lib/physicsjs/*
