@@ -38,6 +38,55 @@ var CyberWarrior = Class.extend({
         this.reset();
         this.finished_loading();
     },
+    _parse_horizontal_block: function (sx, sy) {
+        var tile_count = 1;
+        for (var sx_end = sx + 1; sx_end < tiles_w; ++sx_end) {
+            if (cw_course_data[this._level][sy].charAt(sx_end) == '-' ||
+                cw_course_data[this._level][sy].charAt(sx_end) == '+') {
+                ++tile_count;
+            }
+            else {
+                break;
+            }
+        }
+
+        var rect = Physics.body('rectangle', {
+            x: ((2 * sx + tile_count) / 2) * tile_size,
+            y: sy * tile_size + tile_size / 2,
+            treatment: 'static',
+            cof: 0.1,
+            restitution: 0.99,
+            width: tile_size * tile_count,
+            height: tile_size/2,
+            view: 'h_platform'
+        });
+        return rect;
+    },
+    _parse_vertical_block: function (sx, sy) {
+        var tile_count = 1;
+        for (var sy_end = sy + 1; sy_end < tiles_h; ++sy_end) {
+            if (cw_course_data[this._level][sy_end].charAt(sx) == '|' ||
+                cw_course_data[this._level][sy_end].charAt(sx) == '+'
+            ) {
+                ++tile_count;
+            }
+            else {
+                break;
+            }
+        }
+        var my_height = tile_count==1?tile_size:(tile_count-1)*tile_size;
+        var rect = Physics.body('rectangle', {
+            x: sx * tile_size + tile_size / 2,
+            y: ((2 * sy + tile_count) / 2) * tile_size,
+            treatment: 'static',
+            cof: 0.1,
+            restitution: 0.99,
+            width: tile_size/2,
+            height: my_height,
+            view: 'v_platform'
+        });
+        return rect;
+    },
     reset: function () {
         bugme.log("Reset game");
         // Setup gravity
@@ -71,64 +120,41 @@ var CyberWarrior = Class.extend({
         for (var my = 0; my < tiles_h; ++my) {
             for (var mx = 0; mx < tiles_w; ++mx) {
                 var ch = cw_course_data[this._level][my].charAt(mx);
-                if (ch == '=') {
-                    if (mx == 0 || cw_course_data[this._level][my].charAt(mx-1) != '=') {
-                        var tile_count = 1;
-                        for (var mx_end = mx + 1; mx_end < tiles_w; ++mx_end) {
-                            if (cw_course_data[this._level][my].charAt(mx_end) == '=') {
-                                ++tile_count;
-                            }
-                            else {
-                                break;
-                            }
-                        }
-
-                        var rect = Physics.body('rectangle', {
-                            x: ((2*mx+tile_count)/2) * tile_size,
-                            y: my * tile_size + tile_size / 2,
-                            treatment: 'static',
-                            cof: 0.1,
-                            restitution: 0.99,
-                            width: tile_size * tile_count,
-                            height: tile_size,
-                            view: 'h_platform'
-                        });
+                if (ch == '-') {
+                    if (mx == 0 || (cw_course_data[this._level][my].charAt(mx - 1) != '-'
+                        && cw_course_data[this._level][my].charAt(mx - 1) != '+')) {
+                        var rect = this._parse_horizontal_block(mx, my);
                         this._objects.push(rect);
                     }
                 }
                 else if (ch == '|') {
-                    if (my == 0 || cw_course_data[this._level][my-1].charAt(mx) != '|') {
-                        var tile_count = 1;
-                        for (var my_end = my + 1; my_end < tiles_h; ++my_end) {
-                            if (cw_course_data[this._level][my_end].charAt(mx) == '|') {
-                                ++tile_count;
-                            }
-                            else {
-                                break;
-                            }
-                        }
-
-                        var rect = Physics.body('rectangle', {
-                            x: mx * tile_size + tile_size / 2,
-                            y: ((2*my+tile_count)/2) * tile_size,
-                            treatment: 'static',
-                            cof: 0.1,
-                            restitution: 0.99,
-                            width: tile_size,
-                            height: tile_size * tile_count,
-                            view: 'v_platform'
-                        });
+                    if (my == 0 || (cw_course_data[this._level][my - 1].charAt(mx) != '|'
+                        && cw_course_data[this._level][my - 1].charAt(mx) != '+')) {
+                        var rect = this._parse_vertical_block(mx, my);
                         this._objects.push(rect);
                     }
                 }
-                else if (ch == 'C') {                    var ball = Physics.body('circle', {
+                else if (ch == '+') {
+                    if (mx == 0 || (cw_course_data[this._level][my].charAt(mx - 1) != '-'
+                        && cw_course_data[this._level][my].charAt(mx - 1) != '+')) {
+                        var rect = this._parse_horizontal_block(mx, my);
+                        this._objects.push(rect);
+                    }
+                    if (my == 0 || (cw_course_data[this._level][my - 1].charAt(mx) != '|'
+                        && cw_course_data[this._level][my - 1].charAt(mx) != '+')) {
+                        var rect = this._parse_vertical_block(mx, my);
+                        this._objects.push(rect);
+                    }
+                }
+                else if (ch == 'C') {
+                    var ball = Physics.body('circle', {
                         x: mx * tile_size + tile_size / 2,
                         y: my * tile_size + tile_size / 2,
                         vx: 0.1,
                         vy: 0,
                         cof: 0.1,
                         restitution: 0.99,
-                        radius: tile_size/2,
+                        radius: tile_size / 2,
                         view: 'ball'
                     });
                     this._objects.push(ball);
@@ -149,10 +175,6 @@ var CyberWarrior = Class.extend({
             }
         }
 
-
-
-//        this._objects.push(ball);
-//        this._objects.push(rect);
         this._world.add(this._objects);
     },
     finished_loading: function () {
@@ -182,21 +204,23 @@ var CyberWarrior = Class.extend({
             }
             else if (view == 'h_platform') {
                 var width = this._objects[i].width;
+                var height = this._objects[i].height;
                 this._canvas_obj.drawRect({
                     fillStyle: '#aaf',
                     x: pos.x,
                     y: pos.y,
                     width: width,
-                    height: tile_size
+                    height: height
                 });
             }
             else if (view == 'v_platform') {
+                var width = this._objects[i].width;
                 var height = this._objects[i].height;
                 this._canvas_obj.drawRect({
                     fillStyle: '#afa',
                     x: pos.x,
                     y: pos.y,
-                    width: tile_size,
+                    width: width,
                     height: height
                 });
             }
