@@ -31,6 +31,9 @@ var CyberWarrior = Class.extend({
         this._window.keyup(function (e) {
             go.keyup(e);
         });
+        this._window.focusout(function (e) {
+            go.stop();
+        });
 
         $('#swap').hide();
         $('#dirty').hide();
@@ -327,6 +330,7 @@ var CyberWarrior = Class.extend({
         if (this._world) {
             this._world.unpause();
         }
+        $('#pause-msg').hide();
     },
     stop: function () {
         if (this._timer_id != null) {
@@ -336,5 +340,6 @@ var CyberWarrior = Class.extend({
                 this._world.pause();
             }
         }
+        $('#pause-msg').show();
     }
 });
