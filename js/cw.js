@@ -34,10 +34,15 @@ var CyberWarrior = Class.extend({
         this._window.focusout(function (e) {
             go.stop();
         });
-
-        $('#swap').hide();
-        $('#dirty').hide();
-
+        this._window.on('pagehide', function (e) {
+            go.stop();
+        });
+        this._window.blur(function (e) {
+            go.stop();
+        });
+        $('#pause-msg').on('click touch', function (e) {
+            go.start();
+        });
         this.reset();
         this.finished_loading();
     },
