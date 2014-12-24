@@ -58,7 +58,7 @@ var CyberWarrior = Class.extend({
             y: sy * tile_size + tile_size / 2,
             treatment: 'static',
             cof: 0.1,
-            restitution: 0.99,
+            restitution: 0.9999999,
             width: tile_size * tile_count,
             height: tile_size/2,
             view: 'h_platform'
@@ -83,7 +83,7 @@ var CyberWarrior = Class.extend({
             y: ((2 * sy + tile_count) / 2) * tile_size,
             treatment: 'static',
             cof: 0.1,
-            restitution: 0.99,
+            restitution: 0.9999999,
             width: tile_size/2,
             height: my_height,
             view: 'v_platform'
@@ -100,7 +100,7 @@ var CyberWarrior = Class.extend({
             this._viewport = Physics.aabb(0, 0, draw_w, draw_h);
             var edge_bounce = Physics.behavior('edge-collision-detection', {
                 aabb: this._viewport,
-                restitution: 0.99,
+                restitution: 0.9999999,
                 cof: 0.1
             });
             this._world.add([
